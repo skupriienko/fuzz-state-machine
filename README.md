@@ -2,8 +2,10 @@
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 [![Python: 3.10+](https://img.shields.io/badge/Python-3.10%2B-blue.svg)](pyproject.toml)
+[![CI](https://github.com/skupriienko/fuzz-state-machine/actions/workflows/ci.yml/badge.svg)](https://github.com/skupriienko/fuzz-state-machine/actions)
 [![Invariants: 7 Formal Rules](https://img.shields.io/badge/Invariants-7%20Formal%20Rules-purple.svg)](#-the-7-formal-invariants)
 [![Planning Reliability: 98.5%](https://img.shields.io/badge/Planning%20Reliability-98.5%25-brightgreen.svg)](#-proven-metrics-before-vs-after)
+[![Zero-Dependency Core](https://img.shields.io/badge/Dependencies-Zero%20Stdlib-green.svg)](pyproject.toml)
 
 **Deterministic Invariant Fuzzing & Plan State Machine Engine for AI Coding Agents.**
 
@@ -11,19 +13,41 @@ Eliminates planning hallucinations, circular logic traps, unreachable states, an
 
 ---
 
-## ⚡ Quickstart (One-Line Universal Installer)
+## ⚡ Installation & Package Management
 
+### 1. One-Line Universal Installer (Zero Friction)
 Install directly into any project repository on Linux, macOS, or WSL with one command:
-
 ```bash
 bash install.sh
 ```
-
 This single command installs the `fsm-engine` CLI and **automatically injects the Mandatory Planning Invariant into all major AI tools** (`CLAUDE.md`, `GEMINI.md`, `AGENTS.md`, `.cursorrules`, `.cursor/rules/`, `.windsurfrules`, `.github/copilot-instructions.md`, `CONVENTIONS.md`).
 
-Or install via Python pip:
+### 2. Standard Python Packaging (PEP 517 / 621)
+Install into your current virtual environment:
 ```bash
+# Standard editable install (zero external dependencies, pure stdlib)
 pip install -e .
+
+# With optional PyYAML parsing acceleration
+pip install -e ".[yaml]"
+
+# Full development environment (testing, linting, typing)
+pip install -e ".[dev]"
+```
+
+Or using requirements files:
+```bash
+pip install -r requirements.txt
+pip install -r requirements-dev.txt
+```
+
+### 3. Developer Quality Gates
+```bash
+# Setup pre-commit git hooks
+pre-commit install
+
+# Run unit & stress tests
+python3 -W error tests/test_stress.py
 ```
 
 ---
