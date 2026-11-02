@@ -1,0 +1,38 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "fuzz-state-machine"
+version = "1.0.0"
+description = "Deterministic Invariant Fuzzing & Plan State Machine Engine for AI Agents"
+readme = "README.md"
+authors = [
+    { name = "Serhii Kupriienko", email = "skupriienko@users.noreply.github.com" }
+]
+license = { text = "MIT" }
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: POSIX :: Linux",
+    "Operating System :: MacOS",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+    "Topic :: Software Development :: Testing",
+]
+requires-python = ">=3.10"
+dependencies = []
+
+[project.urls]
+Homepage = "https://github.com/skupriienko/fuzz-state-machine"
+Repository = "https://github.com/skupriienko/fuzz-state-machine.git"
+
+[project.scripts]
+fsm-engine = "fuzz_state_machine.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]

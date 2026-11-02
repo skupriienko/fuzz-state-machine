@@ -1,0 +1,22 @@
+# Python bytecode
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Distribution & Packaging
+build/
+dist/
+*.egg-info/
+.eggs/
+
+# Testing & temp
+.pytest_cache/
+.coverage
+
+# Environments & IDEs
+.venv/
+venv/
+.env
+.idea/
+.vscode/
+*.swp
