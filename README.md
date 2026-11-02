@@ -20,7 +20,7 @@ Install directly into any project repository on Linux, macOS, or WSL with one co
 ```bash
 bash install.sh
 ```
-This single command installs the `fsm-engine` CLI and **automatically injects the Mandatory Planning Invariant into all major AI tools** (`CLAUDE.md`, `GEMINI.md`, `AGENTS.md`, `.cursorrules`, `.cursor/rules/`, `.windsurfrules`, `.github/copilot-instructions.md`, `CONVENTIONS.md`).
+This single command installs the `fsm-engine` CLI and **automatically injects the Mandatory Planning Invariant into all major AI tools** (`CLAUDE.md`, `GEMINI.md`, `AGENTS.md`, `.cursorrules`, `.cursor/rules/`, `.windsurfrules`, `.kilo/kilo.jsonc`, `.kilo/rules/`, `.kilocoderules`, `.github/copilot-instructions.md`, `CONVENTIONS.md`).
 
 ### 2. Standard Python Packaging (PEP 517 / 621)
 Install into your current virtual environment:

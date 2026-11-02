@@ -8,6 +8,7 @@
 # - Gemini CLI & Antigravity (GEMINI.md, AGENTS.md)
 # - Cursor (.cursorrules, .cursor/rules/fsm-planning.mdc)
 # - Windsurf (.windsurfrules)
+# - Kilo / KiloCode (.kilo/kilo.jsonc, .kilo/rules/fsm-planning.md, .kilocoderules)
 # - GitHub Copilot (.github/copilot-instructions.md)
 # - Aider / OpenCode (CONVENTIONS.md)
 #
@@ -98,6 +99,7 @@ append_rule "${TARGET_DIR}/.windsurfrules" "Windsurf Cascade"
 append_rule "${TARGET_DIR}/.github/copilot-instructions.md" "GitHub Copilot"
 append_rule "${TARGET_DIR}/CONVENTIONS.md" "Aider / OpenCode"
 
+# Cursor MDC modern rule
 CURSOR_MDC="${TARGET_DIR}/.cursor/rules/fsm-planning.mdc"
 mkdir -p "$(dirname "${CURSOR_MDC}")"
 cat <<'EOF' > "${CURSOR_MDC}"
@@ -110,6 +112,42 @@ When authoring or executing any multi-step plan, declare the state machine (stat
 and execute `fsm-engine validate <plan.md>`. Proceed only when `PLAN_FUZZ:100/100 EXIT:0` passes.
 EOF
 log_ok "[Cursor MDC] Rule created -> ${CURSOR_MDC}"
+
+# Kilo / KiloCode integration (.kilo/kilo.jsonc and .kilo/rules/fsm-planning.md)
+KILO_DIR="${TARGET_DIR}/.kilo"
+mkdir -p "${KILO_DIR}/rules"
+KILO_CONFIG="${KILO_DIR}/kilo.jsonc"
+if [[ ! -f "${KILO_CONFIG}" ]]; then
+    cat <<'EOF' > "${KILO_CONFIG}"
+{
+  "$schema": "https://app.kilo.ai/config.json",
+  "instructions": [
+    ".kilo/rules/*.md"
+  ]
+}
+EOF
+fi
+
+cat <<'EOF' > "${KILO_DIR}/rules/fsm-planning.md"
+# Mandatory Plan State-Machine & Fuzz Invariant
+
+Before presenting or executing any non-trivial multi-step plan:
+1. Declare a formal state machine block (states, start, terminals, transitions):
+   ```yaml
+   states: [draft, review, approved]
+   start: draft
+   terminals: [approved]
+   transitions:
+     - { from: draft, to: review }
+     - { from: review, to: approved }
+   ```
+2. Validate with: `fsm-engine validate <plan.md>`
+3. Enforcement: Only plans passing `PLAN_FUZZ:100/100 EXIT:0` (0 deadlocks, 0 ghost states, terminal reachability verified) are permitted for execution.
+EOF
+log_ok "[Kilo / KiloCode] Rule created -> ${KILO_DIR}/rules/fsm-planning.md"
+
+# KiloCode legacy compatibility (.kilocoderules)
+append_rule "${TARGET_DIR}/.kilocoderules" "KiloCode Legacy"
 
 # 4. Output receipt
 cat <<RECEIPT
@@ -128,6 +166,7 @@ cat <<RECEIPT
     • Gemini / AGY     : ${TARGET_DIR}/GEMINI.md & AGENTS.md
     • Cursor           : ${TARGET_DIR}/.cursorrules & ${CURSOR_MDC}
     • Windsurf         : ${TARGET_DIR}/.windsurfrules
+    • Kilo / KiloCode  : ${KILO_DIR}/kilo.jsonc & ${KILO_DIR}/rules/fsm-planning.md
     • GitHub Copilot   : ${TARGET_DIR}/.github/copilot-instructions.md
     • Aider / OpenCode : ${TARGET_DIR}/CONVENTIONS.md
 
