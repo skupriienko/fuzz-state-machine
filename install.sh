@@ -47,12 +47,12 @@ cp "${SCRIPT_DIR}/bin/fsm-engine" "${TARGET_DIR}/bin/fsm-engine"
 chmod +x "${TARGET_DIR}/bin/fsm-engine"
 log_ok "CLI installed -> ${TARGET_DIR}/bin/fsm-engine"
 
-# 2. Install Agent Skill integration
+# 2. Install Agent Skill & Module integration
 SKILLS_DIR="${TARGET_DIR}/.agents/skills/fuzz-state-machine"
-mkdir -p "${SKILLS_DIR}/scripts"
+mkdir -p "${SKILLS_DIR}/src"
 cp "${SCRIPT_DIR}/SKILL.md" "${SKILLS_DIR}/SKILL.md"
-cp -r "${SCRIPT_DIR}/src/fuzz_state_machine/"* "${SKILLS_DIR}/scripts/" 2>/dev/null || true
-log_ok "Agent Skill installed -> ${SKILLS_DIR}/SKILL.md"
+cp -r "${SCRIPT_DIR}/src/fuzz_state_machine" "${SKILLS_DIR}/src/"
+log_ok "Agent Skill & library installed -> ${SKILLS_DIR}"
 
 # 3. Inject Mandatory Planning Invariant into ALL AI Tools
 INSTRUCTION_SNIPPET=$(cat <<'EOF'

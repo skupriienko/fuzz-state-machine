@@ -70,12 +70,19 @@ def simple_yaml_parse(text: str) -> dict[str, Any]:
 class PlanFuzzValidator:
     """Rigorous state machine invariant checker and stochastic path fuzzer."""
 
+    MAX_SPEC_FILE_BYTES = 5 * 1024 * 1024  # 5 MB defense against DoS / memory exhaustion
+
     def __init__(self, spec: dict[str, Any] | str | Path):
         if isinstance(spec, (str, Path)) and Path(spec).exists():
-            content = Path(spec).read_text(encoding="utf-8")
+            p = Path(spec)
+            if p.stat().st_size > self.MAX_SPEC_FILE_BYTES:
+                raise ValueError(f"Specification file exceeds maximum allowable size ({self.MAX_SPEC_FILE_BYTES} bytes)")
+            content = p.read_text(encoding="utf-8", errors="replace")
             yaml_text = extract_yaml_from_markdown(content)
             self.data = simple_yaml_parse(yaml_text)
         elif isinstance(spec, str):
+            if len(spec.encode("utf-8")) > self.MAX_SPEC_FILE_BYTES:
+                raise ValueError(f"Specification string exceeds maximum allowable size ({self.MAX_SPEC_FILE_BYTES} bytes)")
             yaml_text = extract_yaml_from_markdown(spec)
             self.data = simple_yaml_parse(yaml_text)
         elif isinstance(spec, dict):
@@ -158,7 +165,9 @@ class PlanFuzzValidator:
                 adj[frm].append(to)
 
         completed_walks = 0
-        max_steps = max(len(self.states) * 3, 20)
+        # Allow sufficient step budget for legal retry cycles (e.g. 5-Whys / review loops)
+        # while deterministically catching infinite loops and unreachable terminal traps.
+        max_steps = max(len(self.states) * 10, 100)
 
         for _ in range(trials):
             curr = self.start
@@ -175,6 +184,6 @@ class PlanFuzzValidator:
             if curr in self.terminals:
                 completed_walks += 1
             else:
-                return False, completed_walks, f"Fuzz path exceeded step limit without reaching terminal: {' -> '.join(visited)}"
+                return False, completed_walks, f"Fuzz path exceeded step limit ({max_steps}) without reaching terminal: {' -> '.join(visited[:15])}..."
 
         return True, completed_walks, f"Successfully fuzzed {completed_walks}/{trials} random walks to terminal."

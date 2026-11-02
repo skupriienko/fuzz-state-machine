@@ -53,6 +53,10 @@ def main():
             print(f"Error: Plan file not found: {plan_path}", file=sys.stderr)
             sys.exit(1)
 
+        if not (1 <= args.trials <= 100_000):
+            print("Error: --trials must be between 1 and 100,000", file=sys.stderr)
+            sys.exit(1)
+
         val = PlanFuzzValidator(plan_path)
         valid, errors = val.validate_invariants()
         if not valid:
