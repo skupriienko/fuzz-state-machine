@@ -33,10 +33,11 @@ def simple_yaml_parse(text: str) -> dict[str, Any]:
     """Lightweight pure-python parser for state machine yaml structures."""
     try:
         import yaml
+
         res = yaml.safe_load(text)
         if isinstance(res, dict):
             return res
-    except Exception:
+    except (ValueError, TypeError, OSError):
         pass
 
     data: dict[str, Any] = {"states": [], "start": None, "terminals": [], "transitions": []}
@@ -76,13 +77,17 @@ class PlanFuzzValidator:
         if isinstance(spec, (str, Path)) and Path(spec).exists():
             p = Path(spec)
             if p.stat().st_size > self.MAX_SPEC_FILE_BYTES:
-                raise ValueError(f"Specification file exceeds maximum allowable size ({self.MAX_SPEC_FILE_BYTES} bytes)")
+                raise ValueError(
+                    f"Specification file exceeds maximum allowable size ({self.MAX_SPEC_FILE_BYTES} bytes)"
+                )
             content = p.read_text(encoding="utf-8", errors="replace")
             yaml_text = extract_yaml_from_markdown(content)
             self.data = simple_yaml_parse(yaml_text)
         elif isinstance(spec, str):
             if len(spec.encode("utf-8")) > self.MAX_SPEC_FILE_BYTES:
-                raise ValueError(f"Specification string exceeds maximum allowable size ({self.MAX_SPEC_FILE_BYTES} bytes)")
+                raise ValueError(
+                    f"Specification string exceeds maximum allowable size ({self.MAX_SPEC_FILE_BYTES} bytes)"
+                )
             yaml_text = extract_yaml_from_markdown(spec)
             self.data = simple_yaml_parse(yaml_text)
         elif isinstance(spec, dict):
@@ -107,7 +112,9 @@ class PlanFuzzValidator:
         if not self.start:
             errors.append("Invariant 2 violated: start state is missing")
         elif self.start not in self.states:
-            errors.append(f"Invariant 2 violated: start state '{self.start}' not in declared states")
+            errors.append(
+                f"Invariant 2 violated: start state '{self.start}' not in declared states"
+            )
 
         # 3. >= 1 terminal state
         if not self.terminals:
@@ -131,12 +138,16 @@ class PlanFuzzValidator:
         # 5. Non-terminal states must have at least one outgoing transition
         for s in self.states:
             if s not in self.terminals and not adj.get(s):
-                errors.append(f"Invariant 5 violated: non-terminal state '{s}' has no outgoing transitions (deadlock)")
+                errors.append(
+                    f"Invariant 5 violated: non-terminal state '{s}' has no outgoing transitions (deadlock)"
+                )
 
         # 6. Terminal states cannot leave terminal
         for t in self.terminals:
             if adj.get(t):
-                errors.append(f"Invariant 6 violated: terminal state '{t}' has outgoing transitions (not terminal)")
+                errors.append(
+                    f"Invariant 6 violated: terminal state '{t}' has outgoing transitions (not terminal)"
+                )
 
         # 7. Reachability from start
         reachable = set()
@@ -152,7 +163,9 @@ class PlanFuzzValidator:
 
         for s in self.states:
             if s not in reachable:
-                errors.append(f"Invariant 7 violated: state '{s}' is unreachable from start '{self.start}'")
+                errors.append(
+                    f"Invariant 7 violated: state '{s}' is unreachable from start '{self.start}'"
+                )
 
         return len(errors) == 0, errors
 
@@ -184,6 +197,14 @@ class PlanFuzzValidator:
             if curr in self.terminals:
                 completed_walks += 1
             else:
-                return False, completed_walks, f"Fuzz path exceeded step limit ({max_steps}) without reaching terminal: {' -> '.join(visited[:15])}..."
+                return (
+                    False,
+                    completed_walks,
+                    f"Fuzz path exceeded step limit ({max_steps}) without reaching terminal: {' -> '.join(visited[:15])}...",
+                )
 
-        return True, completed_walks, f"Successfully fuzzed {completed_walks}/{trials} random walks to terminal."
+        return (
+            True,
+            completed_walks,
+            f"Successfully fuzzed {completed_walks}/{trials} random walks to terminal.",
+        )

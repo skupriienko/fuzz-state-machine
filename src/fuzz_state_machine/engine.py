@@ -25,9 +25,17 @@ class TaskState(StrEnum):
 
 VALID_TRANSITIONS: dict[TaskState, list[TaskState]] = {
     TaskState.IDLE: [TaskState.REASONING, TaskState.DOC_RESOLUTION, TaskState.SANDBOX_COMPUTE],
-    TaskState.REASONING: [TaskState.DOC_RESOLUTION, TaskState.SANDBOX_COMPUTE, TaskState.CRITIQUE_GATE],
+    TaskState.REASONING: [
+        TaskState.DOC_RESOLUTION,
+        TaskState.SANDBOX_COMPUTE,
+        TaskState.CRITIQUE_GATE,
+    ],
     TaskState.DOC_RESOLUTION: [TaskState.SANDBOX_COMPUTE, TaskState.REASONING, TaskState.SYNTHESIS],
-    TaskState.SANDBOX_COMPUTE: [TaskState.CRITIQUE_GATE, TaskState.SYNTHESIS, TaskState.DOC_RESOLUTION],
+    TaskState.SANDBOX_COMPUTE: [
+        TaskState.CRITIQUE_GATE,
+        TaskState.SYNTHESIS,
+        TaskState.DOC_RESOLUTION,
+    ],
     TaskState.CRITIQUE_GATE: [TaskState.MUTATION_PREPARE, TaskState.SYNTHESIS, TaskState.REASONING],
     TaskState.MUTATION_PREPARE: [TaskState.MEMORY_PERSIST, TaskState.SYNTHESIS],
     TaskState.MEMORY_PERSIST: [TaskState.SYNTHESIS],
@@ -39,7 +47,9 @@ class FSMOracle:
     """Verifies that a state sequence conforms to safety and progress invariants."""
 
     @staticmethod
-    def validate_sequence(sequence: list[TaskState], is_mutation_task: bool = False) -> tuple[bool, str]:
+    def validate_sequence(
+        sequence: list[TaskState], is_mutation_task: bool = False
+    ) -> tuple[bool, str]:
         if not sequence:
             return False, "Sequence cannot be empty"
 
@@ -72,7 +82,9 @@ class FSMSequenceEngine:
         if seed is not None:
             random.seed(seed)
 
-    def generate_sequence(self, intent: str = "investigation", is_mutation: bool = False, max_fuzz_attempts: int = 50) -> dict[str, Any]:
+    def generate_sequence(
+        self, intent: str = "investigation", is_mutation: bool = False, max_fuzz_attempts: int = 50
+    ) -> dict[str, Any]:
         """Fuzz a valid state sequence matching the requested intent."""
         # Fast path: Golden sequences
         if intent == "docs_lookup":
@@ -106,11 +118,15 @@ class FSMSequenceEngine:
                 choices = VALID_TRANSITIONS.get(curr, [])
                 if not choices:
                     break
-                filtered = [c for c in choices if c != TaskState.MUTATION_PREPARE] if not is_mutation else choices
+                filtered = (
+                    [c for c in choices if c != TaskState.MUTATION_PREPARE]
+                    if not is_mutation
+                    else choices
+                )
                 curr = random.choice(filtered or choices)
                 seq.append(curr)
 
-            valid, reason = FSMOracle.validate_sequence(seq, is_mutation_task=is_mutation)
+            valid, _reason = FSMOracle.validate_sequence(seq, is_mutation_task=is_mutation)
             if valid:
                 return {
                     "intent": intent,
@@ -120,7 +136,12 @@ class FSMSequenceEngine:
                     "verified": True,
                 }
 
-        fallback = [TaskState.REASONING, TaskState.SANDBOX_COMPUTE, TaskState.CRITIQUE_GATE, TaskState.SYNTHESIS]
+        fallback = [
+            TaskState.REASONING,
+            TaskState.SANDBOX_COMPUTE,
+            TaskState.CRITIQUE_GATE,
+            TaskState.SYNTHESIS,
+        ]
         return {
             "intent": intent,
             "sequence": [s.value for s in fallback],
