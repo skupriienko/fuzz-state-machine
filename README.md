@@ -3,6 +3,7 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 [![Python: 3.10+](https://img.shields.io/badge/Python-3.10%2B-blue.svg)](pyproject.toml)
 [![CI](https://github.com/skupriienko/fuzz-state-machine/actions/workflows/ci.yml/badge.svg)](https://github.com/skupriienko/fuzz-state-machine/actions)
+[![AI Tools: Kilo | Claude | Cursor | Windsurf](https://img.shields.io/badge/AI%20Tools-Kilo%20%7C%20Claude%20%7C%20Cursor%20%7C%20Windsurf-blueviolet.svg)](#-native-ai-tools--kilo--kilocode-integration)
 [![Invariants: 7 Formal Rules](https://img.shields.io/badge/Invariants-7%20Formal%20Rules-purple.svg)](#-the-7-formal-invariants)
 [![Planning Reliability: 98.5%](https://img.shields.io/badge/Planning%20Reliability-98.5%25-brightgreen.svg)](#-proven-metrics-before-vs-after)
 [![Zero-Dependency Core](https://img.shields.io/badge/Dependencies-Zero%20Stdlib-green.svg)](pyproject.toml)
@@ -100,6 +101,22 @@ fsm-engine benchmark
 ```
 
 See [`examples/valid_plan.md`](examples/valid_plan.md) and [`examples/invalid_plan_flawed.md`](examples/invalid_plan_flawed.md) for sample definitions.
+
+---
+
+## 🤖 Native AI Tools & Kilo / KiloCode Integration
+
+Fuzz State Machine Engine out-of-the-box enforces the Mandatory Planning Invariant across all major AI coding tools:
+
+| AI Platform / Assistant | Configuration Files | Injected Planning Invariant & Verification |
+| :--- | :--- | :--- |
+| **Kilo / KiloCode** | `.kilo/kilo.jsonc`<br>`.kilo/rules/fsm-planning.md`<br>`.kilocoderules` | Automatic instruction discovery, mandatory state machine declaration, 100-walk fuzzing gate |
+| **Claude Code** | `CLAUDE.md` | Pre-flight plan invariant gate before tool execution |
+| **Cursor** | `.cursor/rules/fsm-planning.mdc`<br>`.cursorrules` | Modern MDC rule targeted at `*plan*.md` and `*tasks*.md` files |
+| **Windsurf Cascade** | `.windsurfrules` | Cascade step verification |
+| **Gemini CLI / AGY** | `GEMINI.md`<br>`AGENTS.md` | Formal graph verification gate |
+| **GitHub Copilot** | `.github/copilot-instructions.md` | Multi-step task verification |
+| **Aider / OpenCode** | `CONVENTIONS.md` | Plan invariant verification prior to code changes |
 
 ---
 
