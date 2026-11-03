@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "fuzz-state-machine"
-version = "1.0.0"
+version = "1.1.0"
 description = "Deterministic Invariant Fuzzing & Plan State Machine Engine for AI Agents"
 readme = "README.md"
 authors = [

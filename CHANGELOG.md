@@ -6,6 +6,13 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html)
 with secondary CalVer release tracking (`YYYY.MM.DD.N`).
 
+## [1.1.0] - 2026-11-03 (CalVer: 2026.11.03.1)
+
+### Changed
+- Refactored FSME state engine with clean OOP validators and deterministic seedable fuzzing.
+- Enhanced cycle trap, island state, and invariant safety oracle detection.
+- All 8 comprehensive stress benchmarks passing in <0.7s.
+
 ## [1.0.0] - 2026-11-02 (CalVer: 2026.11.02.1)
 
 ### Added
