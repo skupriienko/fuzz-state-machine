@@ -104,6 +104,24 @@ See [`examples/valid_plan.md`](examples/valid_plan.md) and [`examples/invalid_pl
 
 ---
 
+## 🐍 Python API
+
+```python
+from fuzz_state_machine import FSMSequenceEngine, PlanFuzzValidator, TaskState
+
+# Generate safe FSM sequence
+engine = FSMSequenceEngine(seed=42)
+sequence = engine.generate_sequence(intent="refactoring", is_mutation=True)
+print(f"Sequence: {[s.value for s in sequence]}")
+
+# Validate a plan state machine
+validator = PlanFuzzValidator()
+is_valid, errors = validator.validate_plan_file("path/to/plan.md")
+print(f"Plan valid: {is_valid}")
+```
+
+---
+
 ## 🤖 Native AI Tools & Kilo / KiloCode Integration
 
 Fuzz State Machine Engine out-of-the-box enforces the Mandatory Planning Invariant across all major AI coding tools:
