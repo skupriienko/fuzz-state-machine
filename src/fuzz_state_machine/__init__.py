@@ -1,4 +1,6 @@
-"""fuzz_state_machine package."""
+"""fuzz-state-machine: Invariant Fuzzing & Plan State Machine Engine for AI Agents."""
 
-__version__ = "1.0.0"
+from fuzz_state_machine.fuzz import FSMOracle, FSMSequenceEngine, TaskState
+from fuzz_state_machine.oracle import PlanFuzzValidator
+
 __all__ = ["FSMOracle", "FSMSequenceEngine", "PlanFuzzValidator", "TaskState"]

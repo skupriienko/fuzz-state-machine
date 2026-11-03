@@ -15,8 +15,8 @@ SRC_DIR = Path(__file__).resolve().parent.parent / "src"
 if str(SRC_DIR) not in sys.path:
     sys.path.insert(0, str(SRC_DIR))
 
-from fuzz_state_machine.engine import FSMOracle, FSMSequenceEngine, TaskState
-from fuzz_state_machine.validator import PlanFuzzValidator
+from fuzz_state_machine.fuzz import FSMOracle, FSMSequenceEngine, TaskState
+from fuzz_state_machine.oracle import PlanFuzzValidator
 
 
 class TestFSMEStress(unittest.TestCase):
